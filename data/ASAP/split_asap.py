@@ -31,7 +31,7 @@ def main(argv):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--target_path", "-c", help="name of folder for resulting data split")
-    parser.add_argument("--asap_path", "-p", help="location of asap csv file")
+    parser.add_argument("--target_path", "-c", help="name of folder for resulting data split", default="./")
+    parser.add_argument("--asap_path", "-p", help="location of asap csv file", default="asap.tsv")
     args = parser.parse_args()
     main(args)
