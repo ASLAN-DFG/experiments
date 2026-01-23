@@ -87,7 +87,7 @@ def train(target_path, train_fp, test_fp=None):
     np.random.seed(4669)
     save_model = True
     epochs = 6
-    batch_size = 16
+    batch_size = 7
     loss_type = CrossEntropyLoss
     weigh_classes = False
     optimizer = AdamW
@@ -99,7 +99,16 @@ def train(target_path, train_fp, test_fp=None):
     feature_name = 'bert-base-uncased'
     estimator_name = feature_name
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+        print("Using GPU")
+    elif torch.backends.mps.is_available():
+        device = torch.device('mps')
+        print("Using Apple MPS")
+    else:
+        device = torch.device('cpu')
+        print("Using CPU")
+
 
     cv = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=4669)
 
