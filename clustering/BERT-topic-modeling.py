@@ -1,4 +1,5 @@
 import argparse
+from sklearn.cluster import KMeans
 from tqdm import tqdm
 import os
 import pandas as pd
@@ -14,15 +15,13 @@ def main(args):
     model = SentenceTransformer('distilbert-base-nli-mean-tokens')
     embeddings = model.encode(train_text_df['EssayText'], show_progress_bar=True)
 
+    embeddings_proj = apply_embedding_projection(embeddings, method=args.feature_projection)
 
-    umap_embeddings = umap.UMAP(n_neighbors=15,
-                                n_components=5,
-                                metric='cosine').fit_transform(embeddings)
-
-
-    cluster = hdbscan.HDBSCAN(min_cluster_size=args.min_cluster_size,
-                              metric='euclidean',
-                              cluster_selection_method='eom').fit(umap_embeddings)
+    # cluster = hdbscan.HDBSCAN(min_cluster_size=args.min_cluster_size,
+    #                           metric='euclidean',
+    #                           cluster_selection_method='eom').fit(embeddings_proj)
+    cluster_size = args.cluster_size if args.cluster_size > 0 else len(set(train_text_df["Score1"]))
+    cluster = KMeans(n_clusters=cluster_size, random_state=0).fit(embeddings_proj)
 
     # Prepare data
     umap_data = umap.UMAP(n_neighbors=15, n_components=2, min_dist=0.0, metric='cosine').fit_transform(embeddings)
@@ -31,6 +30,14 @@ def main(args):
 
     visualize_clusters(result)
     save_results(train_text_df, result)
+
+
+def apply_embedding_projection(embeddings, method="umap"):
+    if method == "umap":
+        embeddings_proj = umap.UMAP(n_neighbors=15, n_components=5, metric='cosine').fit_transform(embeddings)
+    else:
+        embeddings_proj = embeddings
+    return embeddings_proj
 
 
 def save_results(train_text_df: pd.DataFrame, result: pd.DataFrame):
@@ -49,8 +56,6 @@ def save_results(train_text_df: pd.DataFrame, result: pd.DataFrame):
 
 
 def load_train_data(dataset: str):
-    train_names, train_texts = [], []
-
     train_text_df = pd.read_csv(f'data/{dataset}')
     return train_text_df
 
@@ -67,6 +72,7 @@ def visualize_clusters(result: pd.DataFrame):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", "-d", help="name of the dataset", default="ASAP/1_GOLD_test.csv")
-    parser.add_argument("--min_cluster_size", "-mcs", type=int, help="location of asap csv file", default=15)
+    parser.add_argument("--cluster_size", "-cs", type=int, help="cluster size", default=-1)
+    parser.add_argument("--feature_projection", "-fp", help="feature projection method", default="none", choices=["none", "umap"])
     args = parser.parse_args()
     main(args)
