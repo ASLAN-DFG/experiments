@@ -20,34 +20,14 @@ def compose(*fs):
     return reduce(compose_pair, fs, identity)
 
 
-def prepare_directories(target_path, train_file_path, test_file_path=None):
-    train_file_path = Path(train_file_path)
+def prepare_directories(target_path):
     target_path = Path(target_path)
     output_directory = target_path / 'results'
-
     if not target_path.exists():
         target_path.mkdir()
-
     if not output_directory.exists():
         output_directory.mkdir()
-
-    if test_file_path is not None:
-        test_file_path = Path(test_file_path)
-
-    return train_file_path, test_file_path, target_path, output_directory
-
-
-def read_dataset(file_path):
-    df = pd.read_csv(file_path, index_col=0).drop_duplicates().dropna()
-    #df = pd.read_csv(file_path, index_col=0).drop_duplicates()
-
-    # If every column after id, text should be used as a variable to predict
-    #if len(df.columns) > 2:
-    #    input_column, *target_columns = df.columns
-    #else:
-    #    input_column, target_columns = df.columns[0], [df.columns[1]]
-    input_column, target_columns = df.columns[0], [df.columns[1]]
-    return df, input_column, target_columns
+    return target_path, output_directory
 
 
 def determine_avg_type(labels):
