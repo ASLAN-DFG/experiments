@@ -1,1 +1,1 @@
-# content_scoring
+# code for experiments in project ASLAN

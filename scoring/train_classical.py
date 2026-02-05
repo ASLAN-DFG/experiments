@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import StratifiedKFold
 from preprocessing import tokenize
-from utils import compose, scores_data_frame, predictions_data_frame, save_data_frames, determine_avg_type, prepare_directories, read_dataset
+from utils import compose, scores_data_frame, predictions_data_frame, save_data_frames, determine_avg_type, prepare_directories, read_dataset_asap
 from nltk.corpus import stopwords
 import time
 
@@ -21,11 +21,11 @@ import time
 
 def train(target_path, train_fp, test_fp=None):
     train_fp, test_fp, data_dir, out_dir = prepare_directories(target_path, train_fp, test_fp)
-    df_train, input_col, target_cols = read_dataset(train_fp)
+    df_train, input_col, target_cols = read_dataset_asap(train_fp)
 
     run_train_test = test_fp is not None
     if run_train_test:
-        df_test, _, _ = read_dataset(test_fp)
+        df_test, _, _ = read_dataset_asap(test_fp)
 
     df_test_full = df_test
 
