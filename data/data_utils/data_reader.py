@@ -18,9 +18,12 @@ class AnswerReader:
                 with open(fp, 'r', encoding='utf-8') as file:
                     data = json.load(file)
                 df = pd.DataFrame(data, columns=['id', 'answer', 'score'])
+                if '2way' in fp:
+                    df['score'] = df['score'].map({'Correct': 1, 'Incorrect': 0})
+                else:  # '3way'
+                    df['score'] = df['score'].map({'Correct': 1, 'Incorrect': 0, 'Partially correct': 0.5})
                 return df
             else:
                 raise ValueError(f"Unknown dataset: {name}")
         except Exception as e:
             return f"Error loading data: {e}"
-

@@ -13,7 +13,7 @@ if __name__ == '__main__':
     reader_train = AnswerReader(train_fp, args.dataset)
     df_train = reader_train.to_dataframe()
     reader_test = AnswerReader(test_fp, args.dataset)
-    df_test = reader_train.to_dataframe()
+    df_test = reader_test.to_dataframe()
 
     # Train (and currently Evaluation)
     train(args.experiment_name, df_train, df_test)
