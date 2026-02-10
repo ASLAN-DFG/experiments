@@ -6,6 +6,7 @@ def parse_args():
 
     parser.add_argument("--dataset", type=str, required=True)
     parser.add_argument("--experiment_name", type=str, required=True)
+    parser.add_argument("--experiment_setting", type=str, default=None, required=False)
     parser.add_argument("--train", type=str, required=True)
     parser.add_argument("--test", type=str, required=True)
 

@@ -10,9 +10,10 @@ if __name__ == '__main__':
     test_fp = 'data/' + args.dataset + '/' + args.test
 
     # Preprocess data
-    reader_train = AnswerReader(train_fp, args.dataset)
+    reader_train = AnswerReader(train_fp, args.dataset, args.experiment_setting)
     df_train = reader_train.to_dataframe()
-    reader_test = AnswerReader(test_fp, args.dataset)
+    print(df_train)
+    reader_test = AnswerReader(test_fp, args.dataset, args.experiment_setting)
     df_test = reader_test.to_dataframe()
 
     # Train (and currently Evaluation)
