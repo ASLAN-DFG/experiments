@@ -9,11 +9,15 @@ from typing import List, Tuple, Optional
 class ClusterEngine:
     def __init__(
             self,
+            method,
+            n_clusters,
             model_name: str = 'distilbert-base-nli-mean-tokens',
-            n_neighbors: int = 15,
+            n_neighbors: int = 5,
             n_components: int = 5,
             min_cluster_size: int = 15
     ):
+        self.method = method
+        self.n_clusters = n_clusters
         self.model = SentenceTransformer(model_name)
         self.n_neighbors = n_neighbors
         self.n_components = n_components
@@ -74,3 +78,15 @@ class ClusterEngine:
         result = pd.DataFrame(viz_data, columns=['x', 'y'])
         result['labels'] = labels
         return result, embeddings
+    
+    def run(self, text_list: List[str]):
+        try:
+            if self.method == 'k_means':
+                return self.k_means_clustering(text_list, self.n_clusters)
+            elif self.method == 'topic_modeling':
+                return self.topic_modelling(text_list)
+            else:
+                raise ValueError(f"Unknown method: {self.method}. Possible methods: k_means, topic_modeling")
+        except Exception as e:
+            print(f"DEBUG - Actual Error inside ClusterEngine: {e}")
+            return str(e), None

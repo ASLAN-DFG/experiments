@@ -73,6 +73,7 @@ def compute_class_weights(label2id, y):
 
 
 def train(target_path, df_train, df_test=None,
+          question_id=None,
           model_name='bert-base-uncased',
           learning_rate=2e-5,
           batch_size=7,
@@ -109,7 +110,7 @@ def train(target_path, df_train, df_test=None,
 
     # Use the passed model_name
     bert = model_name
-    feature_name = model_name
+    feature_name = question_id
     estimator_name = feature_name
 
     cv = StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=random_seed)
