@@ -1,0 +1,35 @@
+[project]
+name = "aslan-experiments"
+version = "0.1.0"
+description = "The experiment modul for ASLAN project, including instance-based and similarity-based short answer scoring."
+authors = [
+    {name = "Your Name",email = "you@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "numpy (<2.0.0)",
+    "pandas (<3.0.0)",
+    "tqdm (>=4.67.3,<5.0.0)",
+    "scikit-learn (<1.7.0)",
+    "transformers (<4.41.0)",
+    "torch (==2.0.1)",
+    "torchvision (==0.15.2)",
+    "torchaudio (==2.0.2)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "explicit"
+
+
+[tool.poetry.dependencies]
+torch = {source = "pytorch"}
+torchvision = {source = "pytorch"}
+torchaudio = {source = "pytorch"}
