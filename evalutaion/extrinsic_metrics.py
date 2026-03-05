@@ -5,6 +5,7 @@ import itertools
 from sklearn.metrics.pairwise import pairwise_distances
 from scipy.stats import pearsonr, spearmanr
 import matplotlib.pyplot as plt
+import bcubed
 
 
 def nr_of_rows(df) -> int:
@@ -138,3 +139,19 @@ def sim_correlation(embeddings, y, metric, name=""):
     # plt.savefig(f"fig/violin_corr_{name}.png")
     # plt.show()
     return pearson_r, spearman_r
+
+
+def bcubed_recall(pred, gold):
+    return bcubed.recall(
+        {i: {cluster_id} for i, cluster_id in enumerate(pred)},
+        {i: {cluster_id} for i, cluster_id in enumerate(gold)},
+    )
+
+def bcubed_precision(pred, gold):
+    return bcubed.precision(
+        {i: {cluster_id} for i, cluster_id in enumerate(pred)},
+        {i: {cluster_id} for i, cluster_id in enumerate(gold)},
+    )
+
+def bcubed_f1(pred, gold):
+    return bcubed.fscore(bcubed_precision(pred, gold), bcubed_recall(pred, gold))

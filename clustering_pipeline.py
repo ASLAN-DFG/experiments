@@ -33,13 +33,14 @@ if __name__ == '__main__':
     # Clustering
     engine = ClusterEngine(args.clustering_method, args.n_clusters)
     result, embeddings = engine.run(text_list)
-    #print_clusters(result, text_list)
+    df_test['label_clustering'] = result['labels'].tolist()
+
     prepare_directories(args.experiment_name)
     visualize_clusters(result, args.dataset + ' ' + args.clustering_method, args.experiment_name + '/'+ args.dataset + '_' + args.clustering_method + '.png')
 
     # Clustering Evaluation
-    clustering_evaluation = ClusterEvaluator(embeddings, result['labels'])
-    clustering_evaluation.export_metrics()
+    clustering_evaluation = ClusterEvaluator(result['labels'], score_list, embeddings)
+    clustering_evaluation.get_internal_metrics()
 
     # Label Propagation
     # test_labeling_methods()
@@ -50,14 +51,16 @@ if __name__ == '__main__':
     # Scoring Evaluation and save the results
     scores_random = scores_data_frame(score_list, label_random,'random')
     scores_majority = scores_data_frame(score_list, label_majority,'majority')
-    scores_centroied = scores_data_frame(score_list, label_centroid,'centroid')
+    scores_centroid = scores_data_frame(score_list, label_centroid, 'centroid')
 
     output_dir = f"{args.experiment_name}/{args.dataset}_clustering"
+
+    np.save(output_dir + '/embeddings.npy', embeddings)
 
     df_test['label_random'] = label_random
     df_test['label_majority'] = label_majority
     df_test['label_centroid'] = label_centroid
-    combined_evaluation_df = pd.concat([scores_random, scores_majority, scores_centroied], ignore_index=True)
+    combined_evaluation_df = pd.concat([scores_random, scores_majority, scores_centroid], ignore_index=True)
 
     save_data_frames(output_dir, [combined_evaluation_df, df_test], ['scores.csv','results.csv'])
     

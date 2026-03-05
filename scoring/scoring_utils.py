@@ -72,8 +72,8 @@ def save_data_frames(out_path, dfs, file_names):
 
     for df, file_name in zip(dfs, file_names):
         csv_fp = out_path / file_name
-        #df.to_csv(csv_fp)
-        if csv_fp.exists():
-            df.to_csv(csv_fp, mode='a', header=False)
-        else:
-            df.to_csv(csv_fp)
+        df.to_csv(csv_fp)
+        # if csv_fp.exists():
+        #     df.to_csv(csv_fp, mode='a', header=False)
+        # else:
+        #     df.to_csv(csv_fp)
