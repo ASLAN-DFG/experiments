@@ -1,10 +1,11 @@
 from sklearn import metrics
 import numpy as np
 import pandas as pd
+from evalutaion import extrinsic_metrics
 
 
 class ClusterEvaluator:
-    def __init__(self, data, labels, gold_labels=None, ignore_noise=True):
+    def __init__(self, labels, gold_labels, data = None, ignore_noise=True):
         """
         Works for ANY clustering algorithm.
 
@@ -13,14 +14,15 @@ class ClusterEvaluator:
         gold_labels: Ground truth labels (if available).
         ignore_noise: If True, excludes labels == -1 (common in density-based models).
         """
-        self.data = np.array(data)
+        self.data = np.array(data) if data is not None else None
         self.labels = np.array(labels)
         self.gold_labels = np.array(gold_labels) if gold_labels is not None else None
 
         # Filter noise if requested and if noise exists
         if ignore_noise and -1 in self.labels:
             mask = self.labels != -1
-            self.data = self.data[mask]
+            if self.data is not None:
+                self.data = self.data[mask]
             self.labels = self.labels[mask]
             if self.gold_labels is not None:
                 self.gold_labels = self.gold_labels[mask]
@@ -60,7 +62,13 @@ class ClusterEvaluator:
             "Homogeneity": homo,
             "Completeness": comp,
             "V_Measure": v,
-            "Fowlkes_Mallows": metrics.fowlkes_mallows_score(self.gold_labels, self.labels)
+            "Fowlkes_Mallows": metrics.fowlkes_mallows_score(self.gold_labels, self.labels),
+            "Jaccard Coefficient J": extrinsic_metrics.jaccard_coefficient_j(self.gold_labels, self.labels),
+            "Rand Statistic R": extrinsic_metrics.rand_statistic_r(self.gold_labels, self.labels),
+            "Entropy": extrinsic_metrics.entropy(contingency_matrix),
+            "BCubed F1": extrinsic_metrics.bcubed_f1(self.labels, self.gold_labels),
+            "BCubed Precision": extrinsic_metrics.bcubed_precision(self.labels, self.gold_labels),
+            "BCubed Recall": extrinsic_metrics.bcubed_recall(self.labels, self.gold_labels),
         }
 
     # --- Export to Dataframe ---
